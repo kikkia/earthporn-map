@@ -1,0 +1,15 @@
+.circular-marker {
+    background: none; /* Make the default div background transparent */
+    border: none; /* Remove any default border */
+}
+
+.circular-marker div {
+    /* The styles are now applied directly in the divIcon's HTML */
+}
+
+.circular-marker div:hover {
+    transform: scale(1.15);
+    border-color: #ffcc00;
+    box-shadow: 0 0 8px rgba(0,0,0,0.6), 0 0 15px rgba(255,204,0,0.6);
+    z-index: 1000 !important;
+}
