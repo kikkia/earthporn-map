@@ -1,0 +1,307 @@
+[
+  {
+    "country": "United States",
+    "postCount": 544,
+    "totalUpvotes": 21497539
+  },
+  {
+    "country": "Canada",
+    "postCount": 69,
+    "totalUpvotes": 2738101
+  },
+  {
+    "country": "Iceland",
+    "postCount": 60,
+    "totalUpvotes": 2250818
+  },
+  {
+    "country": "New Zealand",
+    "postCount": 29,
+    "totalUpvotes": 1122458
+  },
+  {
+    "country": "Norway",
+    "postCount": 29,
+    "totalUpvotes": 1116815
+  },
+  {
+    "country": "Italy",
+    "postCount": 24,
+    "totalUpvotes": 980469
+  },
+  {
+    "country": "United Kingdom",
+    "postCount": 26,
+    "totalUpvotes": 979077
+  },
+  {
+    "country": "Netherlands",
+    "postCount": 19,
+    "totalUpvotes": 815982
+  },
+  {
+    "country": "Germany",
+    "postCount": 17,
+    "totalUpvotes": 651780
+  },
+  {
+    "country": "China",
+    "postCount": 13,
+    "totalUpvotes": 552721
+  },
+  {
+    "country": "Switzerland",
+    "postCount": 14,
+    "totalUpvotes": 493210
+  },
+  {
+    "country": "Australia",
+    "postCount": 12,
+    "totalUpvotes": 481433
+  },
+  {
+    "country": "Faroe Islands",
+    "postCount": 8,
+    "totalUpvotes": 360806
+  },
+  {
+    "country": "Japan",
+    "postCount": 8,
+    "totalUpvotes": 330169
+  },
+  {
+    "country": "Finland",
+    "postCount": 7,
+    "totalUpvotes": 300187
+  },
+  {
+    "country": "Indonesia",
+    "postCount": 6,
+    "totalUpvotes": 290799
+  },
+  {
+    "country": "Greenland",
+    "postCount": 6,
+    "totalUpvotes": 280662
+  },
+  {
+    "country": "South Korea",
+    "postCount": 7,
+    "totalUpvotes": 271581
+  },
+  {
+    "country": "Portugal",
+    "postCount": 7,
+    "totalUpvotes": 246146
+  },
+  {
+    "country": "Peru",
+    "postCount": 6,
+    "totalUpvotes": 241461
+  },
+  {
+    "country": "Chile",
+    "postCount": 6,
+    "totalUpvotes": 234433
+  },
+  {
+    "country": "Argentina",
+    "postCount": 5,
+    "totalUpvotes": 196040
+  },
+  {
+    "country": "Kyrgyzstan",
+    "postCount": 5,
+    "totalUpvotes": 183578
+  },
+  {
+    "country": "India",
+    "postCount": 4,
+    "totalUpvotes": 166029
+  },
+  {
+    "country": "Ireland",
+    "postCount": 4,
+    "totalUpvotes": 154051
+  },
+  {
+    "country": "Poland",
+    "postCount": 4,
+    "totalUpvotes": 144693
+  },
+  {
+    "country": "Nepal",
+    "postCount": 3,
+    "totalUpvotes": 126338
+  },
+  {
+    "country": "Sweden",
+    "postCount": 3,
+    "totalUpvotes": 114534
+  },
+  {
+    "country": "Spain",
+    "postCount": 3,
+    "totalUpvotes": 103313
+  },
+  {
+    "country": "Philippines",
+    "postCount": 2,
+    "totalUpvotes": 102022
+  },
+  {
+    "country": "France",
+    "postCount": 2,
+    "totalUpvotes": 78891
+  },
+  {
+    "country": "Mexico",
+    "postCount": 2,
+    "totalUpvotes": 77846
+  },
+  {
+    "country": "Croatia",
+    "postCount": 2,
+    "totalUpvotes": 77471
+  },
+  {
+    "country": "Estonia",
+    "postCount": 2,
+    "totalUpvotes": 73203
+  },
+  {
+    "country": "Antarctica",
+    "postCount": 2,
+    "totalUpvotes": 73075
+  },
+  {
+    "country": "Belgium",
+    "postCount": 2,
+    "totalUpvotes": 72354
+  },
+  {
+    "country": "Guatemala",
+    "postCount": 2,
+    "totalUpvotes": 70871
+  },
+  {
+    "country": "Afghanistan",
+    "postCount": 2,
+    "totalUpvotes": 70293
+  },
+  {
+    "country": "Slovakia",
+    "postCount": 2,
+    "totalUpvotes": 67593
+  },
+  {
+    "country": "Vietnam",
+    "postCount": 2,
+    "totalUpvotes": 65097
+  },
+  {
+    "country": "Mauritius",
+    "postCount": 1,
+    "totalUpvotes": 54014
+  },
+  {
+    "country": "Algeria",
+    "postCount": 1,
+    "totalUpvotes": 41998
+  },
+  {
+    "country": "Austria",
+    "postCount": 1,
+    "totalUpvotes": 41919
+  },
+  {
+    "country": "Brazil",
+    "postCount": 1,
+    "totalUpvotes": 41088
+  },
+  {
+    "country": "Seychelles",
+    "postCount": 1,
+    "totalUpvotes": 40342
+  },
+  {
+    "country": "Namibia",
+    "postCount": 1,
+    "totalUpvotes": 38802
+  },
+  {
+    "country": "Puerto Rico",
+    "postCount": 1,
+    "totalUpvotes": 38167
+  },
+  {
+    "country": "Laos",
+    "postCount": 1,
+    "totalUpvotes": 37785
+  },
+  {
+    "country": "Türkiye",
+    "postCount": 1,
+    "totalUpvotes": 37118
+  },
+  {
+    "country": "Iran",
+    "postCount": 1,
+    "totalUpvotes": 37036
+  },
+  {
+    "country": "Morocco",
+    "postCount": 1,
+    "totalUpvotes": 34764
+  },
+  {
+    "country": "Yemen",
+    "postCount": 1,
+    "totalUpvotes": 34616
+  },
+  {
+    "country": "Colombia",
+    "postCount": 1,
+    "totalUpvotes": 34123
+  },
+  {
+    "country": "Georgia",
+    "postCount": 1,
+    "totalUpvotes": 33206
+  },
+  {
+    "country": "Micronesia",
+    "postCount": 1,
+    "totalUpvotes": 32691
+  },
+  {
+    "country": "Guam",
+    "postCount": 1,
+    "totalUpvotes": 32421
+  },
+  {
+    "country": "Kenya",
+    "postCount": 1,
+    "totalUpvotes": 31942
+  },
+  {
+    "country": "Romania",
+    "postCount": 1,
+    "totalUpvotes": 31194
+  },
+  {
+    "country": "Costa Rica",
+    "postCount": 1,
+    "totalUpvotes": 31137
+  },
+  {
+    "country": "The Bahamas",
+    "postCount": 1,
+    "totalUpvotes": 30610
+  },
+  {
+    "country": "Thailand",
+    "postCount": 1,
+    "totalUpvotes": 30243
+  }
+]

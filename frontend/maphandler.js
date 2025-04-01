@@ -12,46 +12,19 @@ let postsLayer, clusterGroup;
 let pointHeatmapLayer, upvoteHeatmapLayer;
 let heatmapControl; 
 loadGeoJSON();
+loadAuthorLeaderboard();
+loadCountryLeaderboard();
 
-const helloDialog =  L.control.window(map,{title:'Earthporn map', content: welcomeContent}).show()
+const helloDialog =  L.control.window(map,{title:'Earthporn map', content: welcomeContent, modal: true}).show()
 
 async function loadGeoJSON() {
     try {
         response = await fetch('assets/posts.geojson')
             .then(response => response.json())
             .then(data => {
-                postsLayer = L.geoJSON(data,
-                {
-                    style: setLocalStyle,
-                    onEachFeature: setCellProps,
-                    pointToLayer: function (feature, latlng) {
-                        const circularIcon = L.divIcon({
-                            className: 'circular-marker',
-                            html: `
-                                <div style="
-                                    width: 36px; 
-                                    height: 36px; 
-                                    border-radius: 50%; 
-                                    background-image: url('assets/thumbnails/${feature.properties.id}_thumbnail.jpg'); 
-                                    background-size: cover; 
-                                    background-position: center;
-                                    border: 3px solid white; 
-                                    box-shadow: 0 0 5px rgba(0,0,0,0.5), 0 0 10px rgba(0,0,0,0.3);
-                                    transition: all 0.2s ease-in-out;
-                                    transform-origin: center bottom;
-                                "></div>
-                            `,
-                            iconSize: [42, 42],
-                            iconAnchor: [21, 42],
-                            popupAnchor: [0, -42]
-                        });
-                        
-                        return L.marker(latlng, { icon: circularIcon });
-                    },
-                    renderer: paddedRenderer
-                })
+                postsLayer = makeIconCluster(data);
 
-                markerCluster(postsLayer);
+                markerCluster(data);
                 
                 createHeatmapLayers(data);
                 addHeatmapControls();
@@ -63,12 +36,51 @@ async function loadGeoJSON() {
         console.error('Error loading GeoJSON:', error);
         return null;
     }
+
+    map.on('moveend', function () {
+        if (isAnyHeatmapActive()) {
+            setPointLayerOpacity(0.3)
+        }
+    });
 }
 
-function markerCluster(dataLayer) {
-    clusterGroup = L.markerClusterGroup();
-    clusterGroup.addLayer(dataLayer);
+function markerCluster(data) {
+    clusterGroup = L.markerClusterGroup({chunkedLoading: true});
+    clusterGroup.addLayer(makeIconCluster(data));
     map.addLayer(clusterGroup);
+}
+
+function makeIconCluster(data) {
+    return L.geoJSON(data,
+        {
+            style: setLocalStyle,
+            onEachFeature: setCellProps,
+            pointToLayer: function (feature, latlng) {
+                const circularIcon = L.divIcon({
+                    className: 'circular-marker',
+                    html: `
+                        <div style="
+                            width: 36px; 
+                            height: 36px; 
+                            border-radius: 50%; 
+                            background-image: url('assets/thumbnails/${feature.properties.id}_thumbnail.jpg'); 
+                            background-size: cover; 
+                            background-position: center;
+                            border: 3px solid white; 
+                            box-shadow: 0 0 5px rgba(0,0,0,0.5), 0 0 10px rgba(0,0,0,0.3);
+                            transition: all 0.2s ease-in-out;
+                            transform-origin: center bottom;
+                        "></div>
+                    `,
+                    iconSize: [42, 42],
+                    iconAnchor: [21, 42],
+                    popupAnchor: [0, -42]
+                });
+                
+                return L.marker(latlng, { icon: circularIcon });
+            },
+            renderer: paddedRenderer
+        })
 }
 
 function createHeatmapLayers(data) {
@@ -183,6 +195,18 @@ function setPointLayerOpacity(opacity) {
     if (!postsLayer) return;
     
     postsLayer.eachLayer(function(layer) {
+        const markerDiv = layer.getElement();
+        if (markerDiv) {
+            const innerDiv = markerDiv.querySelector('div');
+            if (innerDiv) {
+                innerDiv.style.opacity = opacity;
+            }
+        }
+    });
+
+    if (!clusterGroup) return;
+    
+    clusterGroup.eachLayer(function(layer) {
         const markerDiv = layer.getElement();
         if (markerDiv) {
             const innerDiv = markerDiv.querySelector('div');
@@ -327,5 +351,91 @@ const infoButton = L.Control.extend({
     }
 });
 
+function createAuthorLeaderboardContent(data) {
+    let content = '<h3>Top Authors</h3><ol>';
+    data.forEach(item => {
+        content += `<li>${item.author}: Posts - ${item.postCount}, Upvotes - ${item.totalUpvotes}</li>`;
+    });
+    content += '</ol>';
+    return content;
+}
+
+function createCountryLeaderboardContent(data) {
+    let content = '<h3>Top Countries</h3><ol>';
+    data.forEach(item => {
+        content += `<li>${item.country}: Posts - ${item.postCount}, Upvotes - ${item.totalUpvotes}</li>`;
+    });
+    content += '</ol>';
+    return content;
+}
+
+const LeaderboardControl = L.Control.extend({
+    options: {
+        position: 'topright'
+    },
+
+    onAdd: function (map) {
+        const container = L.DomUtil.create('div', 'leaderboard-control');
+        container.innerHTML = `
+            <div class="leaderboard-toggle">
+                <button id="show-author-leaderboard">Authors</button>
+                <button id="show-country-leaderboard">Countries</button>
+            </div>
+        `;
+        //L.DomEvent.disableClickPropagation(container);
+        return container;
+    }
+});
+
+let authorLeaderboardData;
+let countryLeaderboardData;
+
+async function loadAuthorLeaderboard() {
+    try {
+        const response = await fetch('assets/author_leaderboard.json');
+        authorLeaderboardData = await response.json();
+    } catch (error) {
+        console.error('Error loading author leaderboard:', error);
+    }
+}
+
+async function loadCountryLeaderboard() {
+    try {
+        const response = await fetch('assets/country_leaderboard.json');
+        countryLeaderboardData = await response.json();
+    } catch (error) {
+        console.error('Error loading country leaderboard:', error);
+    }
+}
+
 map.addControl(new githubButton());
 map.addControl(new infoButton());
+map.addControl(new LeaderboardControl());
+
+// TODO: On click off modal, close it
+document.addEventListener('DOMContentLoaded', () => {
+    const showAuthorButton = document.getElementById('show-author-leaderboard');
+    const showCountryButton = document.getElementById('show-country-leaderboard');
+
+    if (showAuthorButton) {
+        showAuthorButton.addEventListener('click', () => {
+            if (authorLeaderboardData) {
+                const content = createAuthorLeaderboardContent(authorLeaderboardData);
+                L.control.window(map,{title:'Author Leaderboard', content: content, modal: true}).show()
+            } else {
+                console.warn('Author leaderboard data not loaded yet.');
+            }
+        });
+    }
+
+    if (showCountryButton) {
+        showCountryButton.addEventListener('click', () => {
+            if (countryLeaderboardData) {
+                const content = createCountryLeaderboardContent(countryLeaderboardData);
+                L.control.window(map,{title:'Country Leaderboard', content: content, modal: true}).show()
+            } else {
+                console.warn('Country leaderboard data not loaded yet.');
+            }
+        });
+    }
+});
