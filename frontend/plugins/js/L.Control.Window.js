@@ -12,8 +12,10 @@ L.Control.Window = L.Control.extend({
         prompt: undefined,
         maxWidth: 600,
         modal: false,
-        position: 'center'
+        position: 'center',
+        closeOnClickOutside: false
     },
+    
     initialize: function (container, options) {
         var self = this;
 
@@ -29,18 +31,18 @@ L.Control.Window = L.Control.extend({
         }
 
         // Create popup window container
-        this._wrapper = L.DomUtil.create('div',modality+' leaflet-control-window-wrapper', L.DomUtil.get(this.options.element));
+        this._wrapper = L.DomUtil.create('div', modality+' leaflet-control-window-wrapper', L.DomUtil.get(this.options.element));
 
-        this._container = L.DomUtil.create('div', 'leaflet-control leaflet-control-window '+this.options.className,this._wrapper);
+        this._container = L.DomUtil.create('div', 'leaflet-control leaflet-control-window '+this.options.className, this._wrapper);
         this._container.setAttribute('style','max-width:'+this.options.maxWidth+'px');
 
-        this._containerTitleBar = L.DomUtil.create('div', 'titlebar',this._container);
-        this.titleContent = L.DomUtil.create('h2', 'title',this._containerTitleBar);
-        this._containerContent =  L.DomUtil.create('div', 'content' ,this._container);
-        this._containerPromptButtons =  L.DomUtil.create('div', 'promptButtons' ,this._container);
+        this._containerTitleBar = L.DomUtil.create('div', 'titlebar', this._container);
+        this.titleContent = L.DomUtil.create('h2', 'title', this._containerTitleBar);
+        this._containerContent = L.DomUtil.create('div', 'content', this._container);
+        this._containerPromptButtons = L.DomUtil.create('div', 'promptButtons', this._container);
 
         if (this.options.closeButton) {
-            this._closeButton = L.DomUtil.create('a', 'close',this._containerTitleBar);
+            this._closeButton = L.DomUtil.create('a', 'close', this._containerTitleBar);
             this._closeButton.innerHTML = '&times;';
         }
 
@@ -53,7 +55,7 @@ L.Control.Window = L.Control.extend({
             .on(this._wrapper, 'touchstart', stop)
             .on(this._wrapper, 'dblclick', stop)
             .on(this._wrapper, 'mousewheel', stop)
-            .on(this._wrapper, 'MozMousePixelScroll', stop)
+            .on(this._wrapper, 'MozMousePixelScroll', stop);
 
         // Attach event to close button
         if (this.options.closeButton) {
@@ -75,6 +77,21 @@ L.Control.Window = L.Control.extend({
 
         //map.on('resize',function(){self.mapResized()});
     },
+    _setupOutsideClickHandler: function() {
+        var self = this;
+        var mapContainer = L.DomUtil.get(this.options.element);
+        
+        // Small delay to prevent the handler from catching the opening click propegation
+        setTimeout(function() {
+            self._outsideClickHandler = function(e) {
+                if (!self._container.contains(e.target) && !self.isHidden()) {
+                    self.hide();
+                }
+            };
+            
+            L.DomEvent.on(mapContainer, 'click', self._outsideClickHandler);
+        }, 100);
+    },
     disableBtn: function(){
 			this._btnOK.disabled=true;
 			this._btnOK.className='disabled';
@@ -94,6 +111,10 @@ L.Control.Window = L.Control.extend({
         return this;
     },
     remove: function () {
+        if (this._outsideClickHandler) {
+            var mapContainer = L.DomUtil.get(this.options.element);
+            L.DomEvent.off(mapContainer, 'click', this._outsideClickHandler);
+        }
 
         L.DomUtil.get(this.options.element).removeChild(this._wrapper);
 
@@ -107,8 +128,6 @@ L.Control.Window = L.Control.extend({
             .off(this._wrapper, 'dblclick', stop)
             .off(this._wrapper, 'mousewheel', stop)
             .off(this._wrapper, 'MozMousePixelScroll', stop);
-
-       // map.off('resize',self.mapResized);
 
         if (this._closeButton && this._close) {
             var close = this._closeButton;
@@ -163,6 +182,11 @@ L.Control.Window = L.Control.extend({
             this.showOn([left+width/2-thisWidth/2-margin, top+top+height/2-thisHeight/2-margin+offset])
         }
 
+        // Setup outside click handler if enabled
+        if (this.options.closeOnClickOutside) {
+            this._setupOutsideClickHandler();
+        }
+
         return this;
     },
     showOn: function(point){
@@ -181,9 +205,17 @@ L.Control.Window = L.Control.extend({
 
         L.DomUtil.removeClass(this._wrapper, 'visible');
         this.fire('hide');
+
+        if (this._outsideClickHandler) {
+            var mapContainer = L.DomUtil.get(this.options.element);
+            L.DomEvent.off(mapContainer, 'click', this._outsideClickHandler);
+        }
+
         return this;
     },
-
+    isHidden: function() {
+        return !L.DomUtil.hasClass(this._wrapper, 'visible');
+    },
     getContainer: function () {
         return this._containerContent;
     },

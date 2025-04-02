@@ -15,7 +15,7 @@ loadGeoJSON();
 loadAuthorLeaderboard();
 loadCountryLeaderboard();
 
-const helloDialog =  L.control.window(map,{title:'Earthporn map', content: welcomeContent, modal: true}).show()
+const helloDialog = L.control.window(map,{title:'Earthporn map', content: welcomeContent, closeOnClickOutside: true}).show();
 
 async function loadGeoJSON() {
     try {
@@ -42,6 +42,15 @@ async function loadGeoJSON() {
             setPointLayerOpacity(0.3)
         }
     });
+
+    const mapContainer = map.getContainer();
+
+    // mapContainer.addEventListener('click', function(e) {
+    //     console.log("here")
+    //     if (!activeModal.getContainer().contains(e.target) && !activeModal.isHidden()) {
+    //         activeModal.hide();
+    //     }
+    // });
 }
 
 function markerCluster(data) {
@@ -128,8 +137,6 @@ function createHeatmapLayers(data) {
         point.lng,
         point.count
     ]);
-
-    console.log(pointHeatData)
     
     const upvoteHeatData = Array.from(upvotesMap.values()).map(point => [
         point.lat,
@@ -412,7 +419,6 @@ map.addControl(new githubButton());
 map.addControl(new infoButton());
 map.addControl(new LeaderboardControl());
 
-// TODO: On click off modal, close it
 document.addEventListener('DOMContentLoaded', () => {
     const showAuthorButton = document.getElementById('show-author-leaderboard');
     const showCountryButton = document.getElementById('show-country-leaderboard');
@@ -421,7 +427,7 @@ document.addEventListener('DOMContentLoaded', () => {
         showAuthorButton.addEventListener('click', () => {
             if (authorLeaderboardData) {
                 const content = createAuthorLeaderboardContent(authorLeaderboardData);
-                L.control.window(map,{title:'Author Leaderboard', content: content, modal: true}).show()
+                L.control.window(map,{title:'Author Leaderboard', content: content, closeOnClickOutside: true}).show()
             } else {
                 console.warn('Author leaderboard data not loaded yet.');
             }
@@ -432,7 +438,7 @@ document.addEventListener('DOMContentLoaded', () => {
         showCountryButton.addEventListener('click', () => {
             if (countryLeaderboardData) {
                 const content = createCountryLeaderboardContent(countryLeaderboardData);
-                L.control.window(map,{title:'Country Leaderboard', content: content, modal: true}).show()
+                L.control.window(map,{title:'Country Leaderboard', content: content, closeOnClickOutside: true}).show()
             } else {
                 console.warn('Country leaderboard data not loaded yet.');
             }
