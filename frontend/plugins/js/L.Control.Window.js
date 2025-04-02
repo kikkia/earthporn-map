@@ -55,7 +55,8 @@ L.Control.Window = L.Control.extend({
             .on(this._wrapper, 'touchstart', stop)
             .on(this._wrapper, 'dblclick', stop)
             .on(this._wrapper, 'mousewheel', stop)
-            .on(this._wrapper, 'MozMousePixelScroll', stop);
+            .on(this._wrapper, 'MozMousePixelScroll', stop)
+            .on(this._wrapper, 'wheel', stop);
 
         // Attach event to close button
         if (this.options.closeButton) {
@@ -127,7 +128,8 @@ L.Control.Window = L.Control.extend({
             .off(this._wrapper, 'touchstart', stop)
             .off(this._wrapper, 'dblclick', stop)
             .off(this._wrapper, 'mousewheel', stop)
-            .off(this._wrapper, 'MozMousePixelScroll', stop);
+            .off(this._wrapper, 'MozMousePixelScroll', stop)
+            .off(this._wrapper, 'wheel', stop);
 
         if (this._closeButton && this._close) {
             var close = this._closeButton;
