@@ -1,5 +1,5 @@
 const map = L.map('map', {preferCanvas: true, worldCopyJump: true}).setView([35.652832, 139.700745], 6);
-const welcomeContent = `<p>LoremIpsum</p>`
+const welcomeContent = `<p>Welcome to a heatmap for the top 1000 posts on r/earthporn. I was curious about where they were all located as I noticed so many in California and PNW so I decided to map them all out. Some didn't mention locations, so I had to find them. Check out the github for a more in depth writup about that process.</p>`
 
 const base = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
