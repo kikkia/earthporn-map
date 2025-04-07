@@ -42,15 +42,6 @@ async function loadGeoJSON() {
             setPointLayerOpacity(0.3)
         }
     });
-
-    const mapContainer = map.getContainer();
-
-    // mapContainer.addEventListener('click', function(e) {
-    //     console.log("here")
-    //     if (!activeModal.getContainer().contains(e.target) && !activeModal.isHidden()) {
-    //         activeModal.hide();
-    //     }
-    // });
 }
 
 function markerCluster(data) {
@@ -60,6 +51,10 @@ function markerCluster(data) {
 }
 
 function makeIconCluster(data) {
+    const isMobile = window.innerWidth <= 768;
+    const iconSize = isMobile ? 30 : 36;
+    const borderWidth = isMobile ? 2 : 3;
+    
     return L.geoJSON(data,
         {
             style: setLocalStyle,
@@ -69,21 +64,21 @@ function makeIconCluster(data) {
                     className: 'circular-marker',
                     html: `
                         <div style="
-                            width: 36px; 
-                            height: 36px; 
+                            width: ${iconSize}px; 
+                            height: ${iconSize}px; 
                             border-radius: 50%; 
                             background-image: url('assets/thumbnails/${feature.properties.id}_thumbnail.jpg'); 
                             background-size: cover; 
                             background-position: center;
-                            border: 3px solid white; 
-                            box-shadow: 0 0 5px rgba(0,0,0,0.5), 0 0 10px rgba(0,0,0,0.3);
+                            border: ${borderWidth}px solid white; 
+                            box-shadow: 0 0 3px rgba(0,0,0,0.5), 0 0 7px rgba(0,0,0,0.3);
                             transition: all 0.2s ease-in-out;
                             transform-origin: center bottom;
                         "></div>
                     `,
-                    iconSize: [42, 42],
-                    iconAnchor: [21, 42],
-                    popupAnchor: [0, -42]
+                    iconSize: [iconSize + (borderWidth * 2), iconSize + (borderWidth * 2)],
+                    iconAnchor: [(iconSize + (borderWidth * 2))/2, iconSize + (borderWidth * 2)],
+                    popupAnchor: [0, -(iconSize + borderWidth)]
                 });
                 
                 return L.marker(latlng, { icon: circularIcon });
@@ -251,17 +246,21 @@ function setLocalStyle(feature) {
 function setCellProps(feature, layer){
     const popupContent = `
       <div>
-        <h3>${feature.properties.title}</h3>
-        <img src="assets/images/${feature.properties.id}.jpg" alt="${feature.properties.title}" style="width: 100%; height: auto; margin-bottom: 5px;" class="popup-image">
-        <p><strong>Location:</strong> ${feature.properties.location}</p>
-        <p><strong>Upvotes:</strong> ${feature.properties.upvotes}</p>
-        <p><strong>Posted by:</strong> <a href="https://www.reddit.com/user/${feature.properties.author}" target="_blank">/u/${feature.properties.author}</a></p>
-        <p><strong>Reddit Post:</strong> <a href="https://www.reddit.com/r/earthporn/comments/${feature.properties.id}" target="_blank">View on Reddit</a></p>
-        </div>`;
+        <h3 style="font-size: 1rem; margin: 0 0 5px 0;">${feature.properties.title}</h3>
+        <img src="assets/images/${feature.properties.id}.jpg" alt="${feature.properties.title}" style="width: 100%; height: auto; max-height: 200px; object-fit: cover; margin-bottom: 5px;" class="popup-image">
+        <div style="font-size: 0.9rem;">
+          <p style="margin: 3px 0;"><strong>Location:</strong> ${feature.properties.location}</p>
+          <p style="margin: 3px 0;"><strong>Upvotes:</strong> ${feature.properties.upvotes}</p>
+          <p style="margin: 3px 0;"><strong>Posted by:</strong> <a href="https://www.reddit.com/user/${feature.properties.author}" target="_blank">/u/${feature.properties.author}</a></p>
+          <p style="margin: 3px 0;"><strong>Reddit Post:</strong> <a href="https://www.reddit.com/r/earthporn/comments/${feature.properties.id}" target="_blank">View on Reddit</a></p>
+        </div>
+      </div>`;
     
     const popup = L.popup({
-        autoPan: false,
-        maxWidth: 400 
+        autoPan: true,
+        maxWidth: Math.min(300, window.innerWidth * 0.8),
+        maxHeight: window.innerHeight * 0.7, 
+        className: 'mobile-friendly-popup'
     }).setContent(popupContent);
     
     layer.bindPopup(popup);
@@ -269,7 +268,6 @@ function setCellProps(feature, layer){
     layer.on('popupopen', function(e) {
         const popup = e.popup;
         const popupContainer = popup._container;
-        
         
         if (popupContainer) {
             const img = popupContainer.querySelector('.popup-image');
@@ -389,7 +387,6 @@ const LeaderboardControl = L.Control.extend({
                 <button id="show-country-leaderboard">Countries</button>
             </div>
         `;
-        //L.DomEvent.disableClickPropagation(container);
         return container;
     }
 });
@@ -419,7 +416,47 @@ map.addControl(new githubButton());
 map.addControl(new infoButton());
 map.addControl(new LeaderboardControl());
 
+function handleResize() {
+    map.closePopup();
+    
+    if (window.innerWidth <= 768) {
+        positionControlsForMobile();
+    } else {
+        positionControlsForDesktop();
+    }
+}
+
+function positionControlsForMobile() {
+    const leaderboardControl = document.querySelector('.leaderboard-control');
+    if (leaderboardControl) {
+        leaderboardControl.style.padding = '5px';
+    }
+    
+    const buttons = document.querySelectorAll('.leaderboard-toggle button');
+    buttons.forEach(button => {
+        button.style.padding = '10px 15px';
+        button.style.margin = '0 3px 3px 0';
+    });
+}
+
+function positionControlsForDesktop() {
+    const leaderboardControl = document.querySelector('.leaderboard-control');
+    if (leaderboardControl) {
+        leaderboardControl.style.padding = '10px';
+    }
+    
+    const buttons = document.querySelectorAll('.leaderboard-toggle button');
+    buttons.forEach(button => {
+        button.style.padding = '8px 12px';
+        button.style.margin = '0 5px 0 0';
+    });
+}
+
+window.addEventListener('resize', handleResize);
+
+
 document.addEventListener('DOMContentLoaded', () => {
+    handleResize();
     const showAuthorButton = document.getElementById('show-author-leaderboard');
     const showCountryButton = document.getElementById('show-country-leaderboard');
 
