@@ -34,7 +34,7 @@ A lot of posts too either never had a mentioned location, or were too vague outs
 ### The biggest issues
 While the AI was pretty good at pulling general info out of the threads, the actual info, or the AI (Depending on the post) was bad at drilling down a specific location, this lead to some locations having dozens of posts assigned the same "location". Like (Glacier national park, Lofotoen islands, etc)
 
-When getting to the next step, Geocoding, this proved problematic as dozens of posts will be assigned to the same place.
+When getting to the next step, Geocoding, this proved problematic as dozens of posts will be assigned to the same place. To remedy this I went in and did my best to manually find the closest approxomation I could to where the post was taken from.
 
 ### Geocoding
 For geocoding, 1000 requests is well within the Google maps free tier, this ended up working out really well for getting LAT/LON for the derived areas.
