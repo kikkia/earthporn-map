@@ -1,5 +1,7 @@
 # [r/EarthPorn heatmap](https://earthporn.kikkia.dev)
 
+![image](https://github.com/user-attachments/assets/2237ec3d-386c-4c8f-8bbd-0b3dd24293f4)
+
 I was curious about the density and representation of posts on the r/Earthporn subreddit, so I decided to take some time and map this out. This map takes the top 1000 posts of all time on that subreddit and maps them as accuratly as I could do it without spending an insane amount of time doing it totally manually.
 
 ## Getting the data
