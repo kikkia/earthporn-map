@@ -5208,8 +5208,8 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -51.92528,
-          -14.235004
+          -54.438537,
+          -25.691669
         ]
       },
       "properties": {
@@ -5217,7 +5217,7 @@
         "upvotes": 41088,
         "id": "8efwrl",
         "author": "depressiown",
-        "location": "Iguazu Falls, on the border of Brazil and Argentina",
+        "location": "Iguazu Falls",
         "country": "Brazil"
       }
     },
