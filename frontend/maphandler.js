@@ -15,7 +15,7 @@ loadGeoJSON();
 loadAuthorLeaderboard();
 loadCountryLeaderboard();
 
-const helloDialog = L.control.window(map,{title:'Earthporn map', content: welcomeContent, closeOnClickOutside: true}).show();
+const helloDialog = L.control.window(map, {title:'Earthporn map', content: welcomeContent, closeOnClickOutside: true}).show();
 
 async function loadGeoJSON() {
     try {
