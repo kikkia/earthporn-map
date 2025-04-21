@@ -48,14 +48,14 @@ As a stretch I thought it might be fun to also ask them to take the narrowed dow
 ### Results
 | Post | Real location | Gemma3 Location | 2.5 Pro | 2.5 Flash |
 | ------ | ------ | ------ | ------ | ------ |
-| [Chased a winter storm overnight into Yosemite. Caught the sunrise.](https://redd.it/5tb4yq) | Tunnel View, Yosemite Valley (37.715797, -119.677096) | | | |
-| [Rainbow Falls, Mammoth Mountain on opening Day 2017 after a long winter](https://redd.it/88qdpo) | Rainbow Falls, Mammoth Lakes, California (37.595503, -119.088754)  | | | |
-| [Beautiful sunrise over the North Shore in Minnesota](https://redd.it/9j8rur) | Hollow Rock Resort, Grand Portage, Minnesota (47.917888, -89.7380656) | | | |
-| [I caught a photo of 3 levels of mountain lakes while visiting Lofoten](https://redd.it/e2l2sf) | Stuvdalsvatnet (67.8998233, 12.9981109) | | | |
-| [A few days ago I got this shot looking down at Lofoten (Norway) with low clouds rolling in](https://redd.it/cr5ue3) | Lofoten Islands, Norway (68.044457, 13.161771)  | | | |
-| [Cherry blossom park Amsterdam, the Netherlands](https://redd.it/mh36ug) | Bloesempark in Amsterdamse Bos (52.3039376, 4.8355025) | | | |
-| [For a 15-minute period during my flight back to Canada yesterday, there were no clouds blocking the view over Greenland's glaciers and icebergs](https://redd.it/6t89rv) | Near Scoresby Sund (69.997639, -27.373977) | | | |
-| [Chiba, Japan By Takahiro Hosoe](https://redd.it/8hh1sc) | Nōmizo Falls, Sasa, Kimitsu, Chiba Prefecture, Japan (35.1854017, 140.0601268) | | | |
+| [Chased a winter storm overnight into Yosemite. Caught the sunrise.](https://redd.it/5tb4yq) | Tunnel View, Yosemite Valley (37.715797, -119.677096) | | Tunnel View, Yosemite National Park, California (37.7156, -119.6774) | |
+| [Rainbow Falls, Mammoth Mountain on opening Day 2017 after a long winter](https://redd.it/88qdpo) | Rainbow Falls, Mammoth Lakes, California (37.595503, -119.088754)  | | Rainbow Falls, Mammoth Lakes, CA (37.603, -119.016) | |
+| [Beautiful sunrise over the North Shore in Minnesota](https://redd.it/9j8rur) | Hollow Rock Resort, Grand Portage, Minnesota (47.917888, -89.7380656) | | Hollow Rock, Lake Superior, Minnesota, USA (47.9503, -89.8608) | |
+| [I caught a photo of 3 levels of mountain lakes while visiting Lofoten](https://redd.it/e2l2sf) | Stuvdalsvatnet (67.8998233, 12.9981109) | | Stuvdalsvatnet and Tridalsvatnet, Lofoten, Norway (67.9512, 13.0035) | |
+| [A few days ago I got this shot looking down at Lofoten (Norway) with low clouds rolling in](https://redd.it/cr5ue3) | Lofoten Islands, Norway (68.044457, 13.161771)  | | Flakstadøya, Lofoten, Norway (68.093, 13.305) | |
+| [Cherry blossom park Amsterdam, the Netherlands](https://redd.it/mh36ug) | Bloesempark in Amsterdamse Bos (52.3039376, 4.8355025) | | Bloesempark, Amsterdamse Bos, Amstelveen, Netherlands (52.3090, 4.8300) | |
+| [For a 15-minute period during my flight back to Canada yesterday, there were no clouds blocking the view over Greenland's glaciers and icebergs](https://redd.it/6t89rv) | Near Scoresby Sund (69.997639, -27.373977) | | Prins Christian Sund, Greenland (60.113, -43.756) | |
+| [Chiba, Japan By Takahiro Hosoe](https://redd.it/8hh1sc) | Nōmizo Falls, Sasa, Kimitsu, Chiba Prefecture, Japan (35.1854017, 140.0601268) | | Kameiwa Cave (Nomizo Waterfall), Kimitsu, Chiba, Japan (35.1815, 140.0435) | |
 
 
 
