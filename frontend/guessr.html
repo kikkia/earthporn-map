@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>EarthPorn GeoGuessr</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <link rel="stylesheet" href="assets/guessr.css"> 
+    <link rel="stylesheet" href="assets/nav.css">
+</head>
+<body>
+
+    <nav class="main-navbar">
+        <ul>
+            <li><a href="index.html" >Map</a></li> 
+            <li><a href="guessr.html" class="active">EarthPorn Guessr</a></li>
+            <li><a href="#" id="nav-info-link">Info</a></li> 
+            <li class="nav-github"><a href="https://github.com/kikkia/earthporn-map" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+        </ul>
+    </nav>
+
+    <div class="game-container">
+        <div id="postguessr-image-container">
+            <img id="postguessr-image" src="" alt="Guess the location">
+             <div id="postguessr-results-container">
+                 <div id="postguessr-final-score"><h2>Game Over!</h2></div>
+                 <button id="postguessr-play-again-button">Play Again</button>
+                 <br><br>
+                 <a href="index.html">Back to Main Map</a>
+             </div>
+        </div>
+
+        <div class="map-and-controls">
+            <div id="guess-map"></div>
+            <div class="controls-info">
+                <h3 id="postguessr-round-info">Round 1/5</h3>
+                <p id="postguessr-distance-info">Click on the map to make your guess.</p>
+                <p id="postguessr-score-info">Score: 0 | Total: 0</p>
+                <p id="postguessr-fix-info" style="display: none;"></p>
+                <button id="postguessr-submit-button" style="display: none;" disabled>Submit Guess</button>
+                <button id="postguessr-next-button" style="display: none;">Next Round</button>
+                <button id="postguessr-fix-button" style="display: none;">Suggest a fix</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="postGuessr.js"></script> 
+
+</body>
+</html>
