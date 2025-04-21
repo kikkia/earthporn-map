@@ -1,5 +1,5 @@
 const map = L.map('map', {preferCanvas: true, worldCopyJump: true}).setView([35.652832, 139.700745], 6);
-const welcomeContent = `<p>Welcome to a heatmap for the top 1000 posts on r/earthporn. I was curious about where they were all located as I noticed so many in California and PNW so I decided to map them all out. Some didn't mention locations, so I had to find them. Check out the github for a more in depth writup about that process.</p>`
+const welcomeContent = `<p>Welcome to a heatmap for the top 1000 posts on r/earthporn. I was curious about where they were all located as I noticed so many in California and PNW so I decided to map them all out. Some didn't mention locations, so I had to find them. Check out the github for a more in depth writup about that process.</p></br><a href="guessr.html">Play a game to guess where photos were taken!</a>`
 
 const base = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
@@ -16,6 +16,16 @@ loadAuthorLeaderboard();
 loadCountryLeaderboard();
 
 const helloDialog = L.control.window(map, {title:'Earthporn map', content: welcomeContent, closeOnClickOutside: true}).show();
+
+const navInfoLink = document.getElementById('nav-info-link');
+if (navInfoLink && helloDialog) {
+    navInfoLink.addEventListener('click', (event) => {
+        event.preventDefault(); // Prevent default '#' link behavior
+        helloDialog.show();     // Show the existing modal
+    });
+} else {
+    console.warn("Could not find navbar info link or helloDialog to attach event.");
+}
 
 async function loadGeoJSON() {
     try {
@@ -412,8 +422,8 @@ async function loadCountryLeaderboard() {
     }
 }
 
-map.addControl(new githubButton());
-map.addControl(new infoButton());
+// map.addControl(new githubButton());
+// map.addControl(new infoButton());
 map.addControl(new LeaderboardControl());
 
 function handleResize() {

@@ -1,0 +1,81 @@
+body {
+    padding-top: 50px;
+    box-sizing: border-box; 
+}
+
+.main-navbar {
+    background-color: #333; 
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1010;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    height: 50px; 
+    display: flex; 
+    align-items: center; 
+    padding: 0 15px; 
+    box-sizing: border-box;
+}
+
+.main-navbar ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    width: 100%;
+    justify-content: flex-start;
+}
+
+.main-navbar ul li {
+    margin-right: 20px; 
+}
+.main-navbar ul li:last-child {
+    margin-right: 0;
+}
+
+.main-navbar ul li.nav-github {
+    margin-left: auto;
+    margin-right: 0;
+}
+
+
+.main-navbar ul li a {
+    color: white;
+    text-decoration: none;
+    font-size: 1em; 
+    font-weight: 500;
+    padding: 15px 10px; 
+    display: block; 
+    transition: color 0.2s ease, background-color 0.2s ease;
+    line-height: 20px; 
+}
+
+.main-navbar ul li a:hover,
+.main-navbar ul li a:focus {
+    color: #ddd;
+    background-color: #444; 
+}
+
+.main-navbar ul li a.active {
+    color: #5cb85c;
+    font-weight: bold;
+}
+
+@media (max-width: 600px) {
+    body {
+        padding-top: 45px;
+    }
+    .main-navbar {
+        height: 45px;
+        padding: 0 10px;
+        position: fixed;
+    }
+    .main-navbar ul li a {
+        font-size: 0.9em;
+        padding: 12px 5px;
+    }
+    .main-navbar ul li {
+        margin-right: 10px;
+    }
+}
