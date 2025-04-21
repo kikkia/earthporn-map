@@ -54,7 +54,7 @@ const postGuessr = (function() {
         if (navInfoLinkGame) {
             navInfoLinkGame.addEventListener('click', (event) => {
                 event.preventDefault();
-                alert("EarthPorn GeoGuessr: Guess the location of top posts from r/EarthPorn! Created based on the EarthPorn Heatmap project.");
+                alert("Created from the top posts in r/earthporn, out of curiosity, and seeing how well AI can mass geocode, and when it fails, GeoGuess it myself. Enjoy.");
             });
         }
 
