@@ -9,6 +9,6 @@ assignees: kikkia
 
 Not every location will be exactly right, if you find one that seems off, please help out and suggest an edit. Thank you, it's very appreciated. 
 
-Post ID: 
+Post ID: **Found on the page by the score**
 
 New Location (Lat/Lon preferred):
