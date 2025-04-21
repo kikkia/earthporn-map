@@ -3,6 +3,8 @@ const postGuessr = (function() {
     const NUM_ROUNDS = 5;
     const MAX_SCORE_PER_ROUND = 5000;
     const MAX_DISTANCE_FOR_SCORE = 1250000;
+    const HINT_PENALTY_PERCENTAGE = 0.15; 
+    const HINT_SEQUENCE = ['ew', 'ns', 'country', 'location', 'zoom'];
     const POSTS_GEOJSON_URL = 'assets/posts.geojson'; 
     const LOCATION_FIX_URL = "https://github.com/kikkia/earthporn-map/issues/new?template=location-update-request.md";
 
@@ -33,6 +35,13 @@ const postGuessr = (function() {
     let UIResultsContainer = null;
     let UIFinalScore = null;
     let UIPlayAgainButton = null;
+
+    let UIHintInfoDisplay = null; // txt for hints
+    let UIHintButtonNext = null
+
+    let currentHintIndex = 0; 
+    let roundPenaltyPercentage = 0;
+    let hemisphereLayers = null; 
 
     function init() {
         console.log("Initializing PostGuessr Game Page...");
@@ -91,7 +100,8 @@ const postGuessr = (function() {
         UIResultsContainer = document.getElementById('postguessr-results-container');
         UIFinalScore = document.getElementById('postguessr-final-score');
         UIPlayAgainButton = document.getElementById('postguessr-play-again-button');
-        console.log("UI Elements Refs:", { UIImageDisplay, UIMapContainer, UIRoundInfo /* ... etc */ });
+        UIHintInfoDisplay = document.getElementById('postguessr-hint-info');
+        UIHintButtonNext = document.getElementById('postguessr-hint-next');
     }
 
     function setupEventListeners() {
@@ -99,6 +109,7 @@ const postGuessr = (function() {
         if (UINextButton) UINextButton.addEventListener('click', nextRound);
         if (UIPlayAgainButton) UIPlayAgainButton.addEventListener('click', resetGame);
         if (UIFixButton) UIFixButton.addEventListener('click', suggestFix);
+        if (UIHintButtonNext) UIHintButtonNext.addEventListener('click', handleHintRequest);
     }
 
     function createMap() {
@@ -124,6 +135,8 @@ const postGuessr = (function() {
             attribution: '© <a href="http://www.openstreetmap.org/copyright">OSM</a>',
             maxZoom: 19,
         }).addTo(map);
+
+        hemisphereLayers = L.layerGroup().addTo(map);
 
         console.log("Guess map created.");
     }
@@ -179,6 +192,11 @@ const postGuessr = (function() {
         currentGuessLatLng = null;
         clearMapElements();
 
+        currentHintIndex = 0; 
+        roundPenaltyPercentage = 0;
+        if (UIHintInfoDisplay) UIHintInfoDisplay.innerHTML = 'Hints Used: <br>';
+        enableHintButton();
+
         currentPost = gamePosts[currentRound - 1];
         const properties = currentPost.properties;
         const imageUrl = `assets/images/${properties.id}.jpg`;
@@ -199,7 +217,7 @@ const postGuessr = (function() {
 
         if (UIRoundInfo) UIRoundInfo.textContent = `Round ${currentRound} / ${NUM_ROUNDS}`;
         if (UIDistanceInfo) UIDistanceInfo.textContent = 'Click on the map to make your guess.';
-        if (UIScoreInfo) UIScoreInfo.textContent = `Total Score: ${totalScore}`;
+        if (UIScoreInfo) UIScoreInfo.textContent = `Potential Score: ${MAX_SCORE_PER_ROUND} | Total Score: ${totalScore}`;
 
         hideElement(UINextButton);
         hideElement(UISubmitButton);
@@ -239,13 +257,14 @@ const postGuessr = (function() {
     function submitGuess() {
         if (!currentGuessLatLng || !currentPost || !map) return;
 
-        console.log("Submitting guess...");
         UISubmitButton.disabled = true;
         map.off('click', handleMapClick);
         if (UIMapContainer) UIMapContainer.style.cursor = '';
 
         const actualCoords = currentPost.geometry.coordinates;
         const actualLatLng = L.latLng(actualCoords[1], actualCoords[0]);
+
+        disableHintButton();
 
         const actualIcon = L.divIcon({
             className: 'actual-location-icon',
@@ -257,7 +276,7 @@ const postGuessr = (function() {
         actualMarker.bindPopup(`Actual Location: ${currentPost.properties.location || currentPost.properties.title}`).openPopup(); // Use location field if available
 
         const distance = map.distance(currentGuessLatLng, actualLatLng);
-        const roundScore = calculateScore(distance);
+        const roundScore = calculateScore(distance, roundPenaltyPercentage);
         totalScore += roundScore;
 
         console.log(`Distance: ${Math.round(distance / 1000)} km, Score: ${roundScore}`);
@@ -265,7 +284,8 @@ const postGuessr = (function() {
         resultLine = L.polyline([currentGuessLatLng, actualLatLng], { color: 'blue', weight: 2, dashArray: '5, 5' }).addTo(map);
 
         if (UIDistanceInfo) UIDistanceInfo.textContent = `Distance: ${formatDistance(distance)}`;
-        if (UIScoreInfo) UIScoreInfo.textContent = `Round Score: ${roundScore} | Total Score: ${totalScore}`;
+        const potentialMax = MAX_SCORE_PER_ROUND * (1 - roundPenaltyPercentage);
+        if (UIScoreInfo) UIScoreInfo.textContent = `Round Score: ${roundScore} (Max: ${Math.round(potentialMax)}) | Total Score: ${totalScore}`;
         if (UIFixInfo) UIFixInfo.textContent = `Post ID: ${currentPost.properties.id}`
 
         hideElement(UISubmitButton);
@@ -276,11 +296,13 @@ const postGuessr = (function() {
         map.flyToBounds(L.latLngBounds(currentGuessLatLng, actualLatLng), { padding: [30, 30], maxZoom: 16 });
     }
 
-    function calculateScore(distance) {
-        if (distance < 50) return MAX_SCORE_PER_ROUND;
+    function calculateScore(distance, penaltyPercentage = 0) {
+        const maxScoreForRound = MAX_SCORE_PER_ROUND * (1 - penaltyPercentage);
+
+        if (distance < 50) return Math.round(maxScoreForRound); 
         if (distance > MAX_DISTANCE_FOR_SCORE) return 0;
 
-        const score = MAX_SCORE_PER_ROUND * Math.pow(1 - (distance / MAX_DISTANCE_FOR_SCORE), 1.5);
+        const score = maxScoreForRound * Math.pow(1 - (distance / MAX_DISTANCE_FOR_SCORE), 1.5);
         return Math.round(score);
     }
 
@@ -326,8 +348,134 @@ const postGuessr = (function() {
         guessMarker = null;
         actualMarker = null;
         resultLine = null;
+        if (hemisphereLayers) {
+            hemisphereLayers.clearLayers();
+       }
     }
 
+    function handleHintRequest() {
+        if (!gameActive || currentGuessLatLng !== null || currentHintIndex >= HINT_SEQUENCE.length) {
+            console.log("Hint request ignored: game not active, guess submitted, or no hints left.");
+            return;
+        }
+
+        const hintType = HINT_SEQUENCE[currentHintIndex];
+        console.log(`Applying hint: ${hintType}`);
+
+        roundPenaltyPercentage += HINT_PENALTY_PERCENTAGE;
+        roundPenaltyPercentage = Math.min(roundPenaltyPercentage, 1.0);
+
+        applyHint(hintType);
+
+        currentHintIndex++;
+
+        const potentialMax = MAX_SCORE_PER_ROUND * (1 - roundPenaltyPercentage);
+        if (UIScoreInfo) UIScoreInfo.textContent = `Potential Score: ${Math.round(potentialMax)} | Total Score: ${totalScore}`;
+
+        if (currentHintIndex >= HINT_SEQUENCE.length) {
+            disableHintButton();
+            if (UIHintButtonNext) UIHintButtonNext.textContent = 'No more hints';
+        } else {
+             if (UIHintButtonNext) UIHintButtonNext.textContent = `Get Hint (-15%)`;
+        }
+    }
+
+    function applyHint(hintType) {
+        const actualCoords = currentPost.geometry.coordinates; // [lon, lat]
+        const actualLatLng = L.latLng(actualCoords[1], actualCoords[0]);
+
+        let hintText = '';
+
+        switch (hintType) {
+            case 'ew':
+                const ewHemisphere = actualCoords[0] > 0 ? 'East' : 'West';
+                hintText = `E/W: ${ewHemisphere}`;
+                applyHemisphereOverlay('ew', ewHemisphere);
+                break;
+            case 'ns':
+                const nsHemisphere = actualCoords[1] > 0 ? 'North' : 'South';
+                hintText = `N/S: ${nsHemisphere}`;
+                applyHemisphereOverlay('ns', nsHemisphere);
+                break;
+            case 'country':
+                hintText = `Country: ${currentPost.properties.country || 'Unknown'}`;
+                break;
+            case 'location':
+                const locationText = currentPost.properties.location && currentPost.properties.location !== currentPost.properties.country
+                                     ? currentPost.properties.location
+                                     : currentPost.properties.title;
+                hintText = `Location: ${locationText || 'Unknown'}`;
+                break;
+            case 'zoom':
+                hintText = `Map zoomed to general area (~100km).`;
+                applyZoomHint(actualLatLng);
+                break;
+            default:
+                console.warn(`Unknown hint type: ${hintType}`);
+                return;
+        }
+
+        if (UIHintInfoDisplay && hintText) {
+            UIHintInfoDisplay.innerHTML += `• ${hintText}<br>`; 
+        }
+    }
+
+    function applyHemisphereOverlay(type, hemisphere) {
+        let boundsToMask = null;
+        if (type === 'ew') {
+            if (hemisphere === 'East') { // mask West
+                boundsToMask = [[-90, -180], [90, 0]];
+            } else { // mask East
+                boundsToMask = [[-90, 0], [90, 180]];
+            }
+        } else if (type === 'ns') {
+            if (hemisphere === 'North') { // mask South
+                boundsToMask = [[-90, -180], [0, 180]];
+            } else { // mask North
+                boundsToMask = [[0, -180], [90, 180]];
+            }
+        }
+
+        if (boundsToMask) {
+            const overlay = L.rectangle(boundsToMask, {
+                color: 'red',
+                weight: 1,
+                opacity: 0.5,
+                fillOpacity: 0.2,
+                interactive: false,
+                className: `hemisphere-overlay ${type}`
+            });
+            hemisphereLayers.addLayer(overlay);
+        }
+    }
+
+    function applyZoomHint(centerLatLng) {
+        const latBuffer = 1.0;
+        const lonBuffer = 1.0 / Math.cos(centerLatLng.lat * Math.PI / 180);
+        const southwest = L.latLng(centerLatLng.lat - latBuffer, centerLatLng.lng - lonBuffer);
+        const northeast = L.latLng(centerLatLng.lat + latBuffer, centerLatLng.lng + lonBuffer);
+        const bounds = L.latLngBounds(southwest, northeast);
+
+        map.flyToBounds(bounds, { maxZoom: 9, duration: 1 });
+    }
+
+    function disableHintButton() {
+        if (UIHintButtonNext) {
+            UIHintButtonNext.disabled = true;
+            UIHintButtonNext.textContent = 'No more hints';
+        }
+    }
+
+    function enableHintButton() {
+        if (UIHintButtonNext) {
+            UIHintButtonNext.disabled = currentHintIndex >= HINT_SEQUENCE.length;
+             if (!UIHintButtonNext.disabled) {
+                 UIHintButtonNext.textContent = 'Get Hint (-15%)';
+             } else {
+                 UIHintButtonNext.textContent = 'No more hints';
+             }
+        }
+    }
 
     if (document.readyState === 'loading') { 
         document.addEventListener('DOMContentLoaded', init);

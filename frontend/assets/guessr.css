@@ -63,7 +63,7 @@ body {
 }
 
 #guess-map {
-    height: 300px;
+    height: 500px;
     width: 100%;
     margin-bottom: 15px;
     border: 1px solid var(--border-color);
@@ -202,5 +202,44 @@ body {
      #postguessr-results-container {
         width: 85%;
         padding: 20px;
+    }
+}
+
+#postguessr-hint-next {
+    margin: 15px auto 0 auto;
+    display: block; 
+    padding: 12px 20px; 
+    font-size: 1em;
+}
+
+#postguessr-hint-next:disabled {
+   opacity: 0.6;
+   cursor: not-allowed; 
+}
+
+#postguessr-hint-info {
+    margin-top: 10px;
+    min-height: 1.2em;
+    color: var(--text-secondary);
+    font-size: 0.9em;
+    text-align: left; 
+    word-break: break-word;
+    padding: 0 10px; 
+}
+
+.hemisphere-overlay.leaflet-interactive {
+ pointer-events: none;
+}
+
+@media (max-width: 768px) {
+
+    #postguessr-hint-next {
+        padding: 10px 15px;
+        font-size: 0.9em;
+    }
+
+    #postguessr-hint-info {
+       font-size: 0.8em;
+       padding: 0 5px;
     }
 }
