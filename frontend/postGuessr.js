@@ -43,6 +43,8 @@ const postGuessr = (function() {
     let roundPenaltyPercentage = 0;
     let hemisphereLayers = null; 
 
+    let roundHistory = [];
+
     function init() {
         console.log("Initializing PostGuessr Game Page...");
         getUIElements(); 
@@ -183,8 +185,17 @@ const postGuessr = (function() {
 
     function selectRandomPosts(allPosts, count) {
         if (!allPosts || allPosts.length < count) return null;
-        const shuffled = [...allPosts].sort(() => 0.5 - Math.random());
+        const shuffled = fisherYatesShuffle(allPosts);
         return shuffled.slice(0, count);
+    }
+
+    function fisherYatesShuffle(array) {
+        const arr = [...array]; 
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
     }
 
     function startRound() {
@@ -288,6 +299,8 @@ const postGuessr = (function() {
         if (UIScoreInfo) UIScoreInfo.textContent = `Round Score: ${roundScore} (Max: ${Math.round(potentialMax)}) | Total Score: ${totalScore}`;
         if (UIFixInfo) UIFixInfo.textContent = `Post ID: ${currentPost.properties.id}`
 
+        roundHistory.push({guess: currentGuessLatLng, actual: currentPost, info: `${currentRound}: ${formatDistance(distance)}km away.`})
+
         hideElement(UISubmitButton);
         showElement(UINextButton);
         showElement(UIFixButton);
@@ -330,6 +343,24 @@ const postGuessr = (function() {
 
         showView('results');
         if (UIFinalScore) UIFinalScore.innerHTML = `<h2>Game Over!</h2><p>Your Final Score: ${totalScore} / ${NUM_ROUNDS * MAX_SCORE_PER_ROUND}</p>`;
+    
+        // Populate map with all of the rounds played
+        for (const index in roundHistory) {
+            round = roundHistory[index];
+            const actualIcon = L.divIcon({
+                className: 'actual-location-icon',
+                html: `<img src="assets/thumbnails/${round.actual.properties.id}_thumbnail.jpg" style="width: 30px; height: 30px;">`,
+                iconSize: [30, 30], 
+                iconAnchor: [15, 15] 
+            });
+            const actualCoords = round.actual.geometry.coordinates;
+            const actualLatLng = L.latLng(actualCoords[1], actualCoords[0]);
+            let actualMarker = L.marker(actualLatLng, { icon: actualIcon }).addTo(map);
+            actualMarker.bindPopup(`Actual Location: ${round.actual.properties.location || round.actual.properties.title}`).openPopup(); // Use location field if available
+            resultLine = L.polyline([round.guess, actualLatLng], { color: 'blue', weight: 2, dashArray: '5, 5' }).addTo(map);
+            guessMarker = L.marker(round.guess, { draggable: false }).addTo(map);
+            guessMarker.bindPopup(round.info).openPopup();
+        }
     }
 
     function resetGame() {
