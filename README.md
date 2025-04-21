@@ -1,4 +1,4 @@
-# [r/EarthPorn heatmap](https://earthporn.kikkia.dev)
+# [r/EarthPorn heatmap / Guessr game](https://earthporn.kikkia.dev)
 
 ![image](https://github.com/user-attachments/assets/2237ec3d-386c-4c8f-8bbd-0b3dd24293f4)
 
